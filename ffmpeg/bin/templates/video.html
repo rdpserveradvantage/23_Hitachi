@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!--suppress XmlInvalidId -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Video Selector</title>
+  </head>
+  <body>
+    <div class="container">
+      <h3>Video Select</h3>
+    </div>
+
+    <!-- Form -->
+    <div class="container">
+      <form action="send" method="POST">
+        <label for="file">file</label>
+        <select class="u-full-width" name="file">
+          {% for file in files %}
+            <option value="{{file}}">{{file}}</option>
+          {% endfor %}
+        </select>
+          <input type="submit" value="Play" id="play_btn" />
+        <br />
+      </form>
+    </div>
+  </body>
+</html>
