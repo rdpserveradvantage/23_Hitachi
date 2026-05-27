@@ -1,0 +1,7 @@
+file ftp_video/24/merge_video/2022-08-28_07_35_00.avi
+file ftp_video/24/merge_video/2022-08-28-08_15_59.avi
+file ftp_video/24/merge_video/2022-08-28-08_37_59.avi
+file ftp_video/24/merge_video/2022-08-28-08_53_59.avi
+file ftp_video/24/merge_video/2022-08-28-09_09_59.avi
+file ftp_video/24/merge_video/2022-08-28-11_44_00.avi
+file ftp_video/24/merge_video/2022-08-28-11_48_00.avi
