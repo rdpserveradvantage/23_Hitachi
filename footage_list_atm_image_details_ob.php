@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+    <?php 
+    include('head.php');
+    //include('config.php');
+	function ftpRecursiveFileListing($ftpConnection, $path) {
+			static $allFiles = array();
+			$contents = ftp_nlist($ftpConnection, $path);
+
+			foreach($contents as $currentFile) {
+				// assuming its a folder if there's no dot in the name
+				if (strpos($currentFile, '.') === false) {
+					ftpRecursiveFileListing($ftpConnection, $currentFile);
+				}
+				$allFiles[$path][] = substr($currentFile, strlen($path) + 1);
+			}
+			return $allFiles;
+		}
+		
+		function tempdir() {
+			$tempfile=tempnam(sys_get_temp_dir(),'');
+			// tempnam creates file on disk
+			if (file_exists($tempfile)) { unlink($tempfile); }
+			mkdir($tempfile);
+			if (is_dir($tempfile)) { return $tempfile; }
+		}
+		
+		function ftp_copy($conn_distant , $pathftp , $pathftpimg ,$img){ 
+		       // $temp_fol = tempdir();
+			   $dir = __DIR__.'/temp/';
+				# See if directory exists, create if not
+				if(!is_dir($dir))
+					mkdir($dir,0755,true);
+				$d_drive = "D:\FTP_VIDEO";
+				if(!is_dir($d_drive))
+				   mkdir($d_drive,0755,true);
+			   $parent_dest = $d_drive.$pathftpimg;
+			   $destination = $d_drive.$pathftpimg.'/'.$img;
+			   if(ftp_get($conn_distant, $dir.'/'.$img, $pathftp.'/'.$img ,FTP_BINARY)){ 
+			        $src = $dir.'/'.$img;
+					if (!is_dir($parent_dest)) {
+					  mkdir(dirname($destination ), 0777, true);
+					}
+					
+					if( !copy($src, $destination) ) { 
+						return false; 
+					} 
+					else { 
+						unlink($dir.'/'.$img) ;
+					} 
+					/*if(ftp_put($conn_distant, $pathftpimg.'/'.$img ,TEMPFOLDER.$img , FTP_BINARY)){ 
+							unlink(TEMPFOLDER.$img) ;                                              
+					} else{                                
+							return false; 
+						}  */
+
+				}else{ 
+						return false ; 
+				} 
+				return true ; 
+		}
+    ?>
+	
+	<style>
+		.bt{
+				border-top: 1px solid #1e1f33;
+		  }
+		  .br
+		  {
+				border-right: 1px solid #282844;
+		  }
+		   div.card-body {
+		/*	margin:4px, 4px;
+			padding:4px;
+			background-color: green;
+			width: 500px;  
+			height: 210px; 
+			overflow-x: hidden;
+			overflow-y: scroll; */
+			text-align:justify;
+		}
+	</style>
+	<style>
+		.menu-icon
+		{
+			width: 33px;
+			margin-right: 7%;
+		}
+		th, td {
+			white-space: nowrap;
+		}
+	</style>
+         <?php include('top-navbar.php');
+		 
+		        date_default_timezone_set("Asia/Calcutta"); 
+                $current_datetime = date('Y-m-d H:i:s');
+                $now   = time();
+           	    $today_date = date('Y-m-d');
+	
+				$ftp_conn_local = OpenComfortFTPLocalCon();
+				$ftp_pasv_local = ftp_pasv($ftp_conn_local,true);
+								 
+				$atmimagepath = $_GET['atmimage'];	
+                $folder_path = "All_Footages/".$atmimagepath; 		
+                //echo $folder_path;				
+				$file_list = ftp_nlist($ftp_conn_local, $folder_path);
+				//echo '<pre>';print_r($file_list);echo '</pre>';die;
+		         $_split_folder = explode("/",$atmimagepath);
+				$split_mon = $_split_folder[0]; $split_dt = $_split_folder[1]; $split_atm = $_split_folder[2];
+		 ?>
+            <div class="container-fluid page-body-wrapper">
+                <!-- partial:partials/_settings-panel.html -->
+                <!-- partial -->
+                <!-- partial:partials/_sidebar.html -->
+                <?php include('navbar.php');?>
+                <!-- partial -->
+                <div class="main-panel">
+                    <div class="content-wrapper">
+                    
+
+						  <div class="card">
+							<div class="card-body">
+							  <h4 class="card-title">Footage Details > <?php echo $split_mon;?> > <?php echo $split_dt;?> > <?php echo $split_atm;?></h4>
+							  
+							  
+								 <div class="row">
+								    <?php if(count($file_list)>0){ 
+									          for($i=0;$i<count($file_list);$i++){
+												  $split_atm_image = explode("/",$file_list[$i]);
+												  if(count($split_atm_image)==5){
+												     $_atmid_imageval = $split_atm_image[4];
+													 $local_file_dir = "E:/All_Footage/".$atmimagepath;
+					                                 $local_file_dir = str_replace("/","\\\\",$local_file_dir);
+													 $local_file = $local_file_dir."/".$_atmid_imageval;
+													 $server_file = $folder_path."/".$_atmid_imageval;
+													 $_is_dwnld = 0;
+													 if (ftp_get($ftp_conn_local, $local_file, $server_file, FTP_ASCII))
+													  {  $_is_dwnld = 1;?>
+												     
+													 <!--<a download title="Download" href="<?php echo $local_file;?>"> 
+														Download										
+													</a> -->
+													<?php  }
+													else
+													  {
+													  //echo "Error downloading $server_file.";
+													  }
+									?>
+									<div class="col-lg-3 col-xl-2">
+										 
+											<div class="file-man-box">
+												<div class="file-img-box">
+													<img src="images/shared-folder.png">
+												</div>
+												<div class="file-man-title" title="Date" >
+													<?php echo $_atmid_imageval;?>
+													
+												</div>
+												<?php if($_is_dwnld==1){ ?>
+												<div class="file-man-title">
+												   <a href="<?php echo 'download_footage.php?path='.$local_file;?>" title="Click To Download">Download</a>
+												</div>
+												<?php } ?>
+											</div>
+										
+									</div>
+												  <?php }}}?>
+								 </div>
+							</div>
+						  </div>
+						
+                    </div>
+                    <?php include('footer.php');?>
+                </div>
+            </div>
+        </div>
+        <script src="vendors/js/vendor.bundle.base.js">
+        </script>
+        <script src="vendors/js/vendor.bundle.addons.js">
+        </script>
+        
+        <script src="js/off-canvas.js">
+        </script>
+        <script src="js/hoverable-collapse.js">
+        </script>
+        <script src="js/misc.js">
+        </script>
+        <script src="js/settings.js">
+        </script>
+        <script src="js/todolist.js">
+        </script>
+        <script src="js/dashboard.js">
+        </script>
+        <script src="js/site_health.js"></script>
+        <script src="js/data-table.js"></script>
+         <script src="js/data-table2.js"></script>
+         <script src="js/select2.js"></script>
+       <script>
+         onload();
+       </script>
+    </body>
+</html>
