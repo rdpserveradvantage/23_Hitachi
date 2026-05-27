@@ -1,0 +1,163 @@
+function onload()
+{
+   // get_ai_ticket();
+}
+function getTicketDetails() {
+	get_view();
+}
+$("#AtmID").change(function(){ debugger;
+//	get_Detail();
+//	get_view();
+})
+$("#Bank").change(function(){ debugger;
+	//get_Detail();
+	//get_view();
+})
+$("#Client").change(function(){ debugger;
+	
+})
+
+
+		function get_view()
+		{
+		    var Client = $("#Client").val();
+			var Bank = $("#Bank").val();
+			var AtmID = $("#AtmID").val();
+			var Circle = $('#Circle').val();
+			var month = $("#month").val();
+			var year = $('#year').val();
+			var start= $("#start").val(); 
+            var end= $("#end").val();
+			
+			if(Client==''){
+				swal("Oops!", "Bank Must Required !", "error");
+				return false;
+			}
+			if(month=='0'){
+				swal("Oops!", "Month Must Required !", "error");
+				return false;
+			}
+			if(year=='0'){
+				swal("Oops!", "Year Must Required !", "error");
+				return false;
+			}
+			$("#start_date").val(start);
+	        $("#start_end").val(end);
+			//$('#ticketview_tbody').html('');
+			$("#load").show();
+			$.ajax({
+				url: "daily_camera_wise_report_ajax.php", 
+				type: "POST",
+				data: {client:Client,bank:Bank,atmid:AtmID,circle:Circle,month:month,year:year,start_date:start,end_date:end},
+				success: (function (result) { debugger;
+				    $("#load").hide();
+				    debugger;
+				
+				    console.log(result);
+				    var obj = JSON.parse(result);
+					console.log(obj);
+					var title = "( From : "+start+ " To : "+end+" )";
+				    var data_arr = obj.array_data;
+					var column_arr = obj.newcolumn_array;
+				    var table = $('#example1').DataTable({
+						columns: column_arr,
+						data: data_arr,
+						rowsGroup: [
+						  'First:name',
+						  'Second:name',
+						  'Third:name',
+						  'Fourth:name',
+						  'Fifth:name',
+						  'Sixth:name',
+						  'Seventh:name'
+						],
+						dom: 'Bfrtip',
+						buttons: [
+							 // 'excelHtml5'
+							{
+								extend: 'excelHtml5',
+								messageTop: title
+							},
+						],
+						title: title,
+						pageLength: '40',
+					});  
+				})
+			});
+		}
+
+
+
+function get_view1()
+		{
+		    var Client = $("#Client").val();
+			var Bank = $("#Bank").val();
+			var AtmID = $("#AtmID").val();
+			var Circle = $('#Circle').val();
+			var month = $("#month").val();
+			var year = $('#year').val();
+			var start= $("#start").val(); 
+            var end= $("#end").val();
+			
+			if(Client==''){
+				swal("Oops!", "Bank Must Required !", "error");
+				return false;
+			}
+			if(month=='0'){
+				swal("Oops!", "Month Must Required !", "error");
+				return false;
+			}
+			if(year=='0'){
+				swal("Oops!", "Year Must Required !", "error");
+				return false;
+			}
+			$("#start_date").val(start);
+	        $("#start_end").val(end);
+			//$('#ticketview_tbody').html('');
+			$("#load").show();
+			$.ajax({
+				url: "daily_camera_wise_report_ajax_new.php", 
+				type: "POST",
+				data: {client:Client,bank:Bank,atmid:AtmID,circle:Circle,month:month,year:year,start_date:start,end_date:end},
+				dataType: "json", 
+				success: (function (result) { debugger;
+				   console.log(result);
+					 $("#load").hide();
+					// $('#order-listing').dataTable().fnClearTable();
+                     var column_arr = result[0].data2;
+					// var data_arr = result[0].data1;
+					 var data_arr = [
+    ['1', 'David', 'Maths', '80','0','0','0','0','0','0','0','0'],
+    ['1', 'David', 'Physics', '90','0','0','0','0','0','0','0','0'],
+    ['1', 'David', 'Computers', '70','0','0','0','0','0','0','0','0'],
+    ['2', 'Alex', 'Maths', '80','0','0','0','0','0','0','0','0'],
+    ['2', 'Alex', 'Physics', '70','0','0','0','0','0','0','0','0'],
+    ['2', 'Alex', 'Computers', '90','0','0','0','0','0','0','0','0'],
+  ];
+					 var table = $('#example1').DataTable({
+						columns: column_arr,
+						data: data_arr,
+						rowsGroup: [
+						  'first:name',
+						  'second:name',
+						  'third:name',
+						  'fourth:name',
+						  'fifth:name',
+						  'sixth:name',
+						  'seventh:name'
+						],
+						dom: 'Bfrtip',
+						buttons: [
+							  'excelHtml5'
+						],
+						pageLength: '40',
+						});
+				
+				})
+			});
+		}
+
+
+
+
+
